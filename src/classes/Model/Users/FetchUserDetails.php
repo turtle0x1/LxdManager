@@ -109,4 +109,21 @@ class FetchUserDetails
         ]);
         return $do->fetch() ? true : false;
     }
+    public function isLoginDisabled(int $userId)
+    {
+        $sql = "SELECT
+                    1
+                FROM
+                    `Users`
+                WHERE
+                    `User_ID` = :userId
+                AND
+                    `User_Login_Disabled` = 1
+                ";
+        $do = $this->database->prepare($sql);
+        $do->execute([
+            ":userId"=>$userId
+        ]);
+        return $do->fetch() ? true : false;
+    }
 }

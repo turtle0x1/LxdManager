@@ -12,6 +12,7 @@ use dhope0000\LXDClient\Constants\InstanceSettingsKeys;
 use dhope0000\LXDClient\Tools\Ldap\Ldap;
 use dhope0000\LXDClient\Exceptions\Users\CantFindUserException;
 use dhope0000\LXDClient\Exceptions\Users\PasswordIncorrectException;
+use dhope0000\LXDClient\Exceptions\Users\DisabledUserAttemptedLogin;
 
 class LogUserIn
 {
@@ -66,6 +67,12 @@ class LogUserIn
         }
 
         $userId = $this->fetchUserDetails->fetchId($username);
+
+        $isLoginDisabled = $this->fetchUserDetails->isLoginDisabled($userId);
+
+        if ($isLoginDisabled) {
+            throw new DisabledUserAttemptedLogin($username);
+        }
 
         $allowedProjects = $this->fetchAllowedProjects->fetchAll($userId);
 
